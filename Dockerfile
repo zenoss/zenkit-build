@@ -3,7 +3,7 @@ FROM golang:1.8.3-alpine
 ARG GLIBC_VERSION=2.25-r0
 
 # Install tools of general use
-RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates
+RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect
 
 # Install glibc from sgerrand/alpine-pkg-glibc
 RUN curl -sSL https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub > /etc/apk/keys/sgerrand.rsa.pub && \
