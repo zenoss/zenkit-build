@@ -28,7 +28,7 @@ RUN go get github.com/onsi/ginkgo/ginkgo && \
 
 # Install coverage tools to produce coverage reports
 RUN go get github.com/wadey/gocovmerge && \
-	go get github.com/axw/gocov && \
+	go get github.com/axw/gocov/gocov && \
 	go get github.com/AlekSi/gocov-xml
 
 # Install gobindata to bake in swagger
