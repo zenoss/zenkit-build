@@ -11,3 +11,7 @@ interact
 exit
 EOF
 )
+(
+	cd ${NAME}; \
+ 	make
+)
