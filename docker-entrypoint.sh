@@ -11,6 +11,6 @@ for f in ${SYMLINKS}; do
 done
 cd ${WORKDIR}
 
-adduser -D -s /bin/bash -u $USER_ID -g "" user
+adduser -D -s /bin/bash -u $USER_ID -g "" user 2>/dev/null
 export HOME=/home/user
 exec /sbin/su-exec user "$@"
