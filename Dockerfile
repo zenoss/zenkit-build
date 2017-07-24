@@ -38,8 +38,8 @@ RUN go get github.com/jteeuwen/go-bindata/go-bindata
 RUN go get github.com/tmrts/boilr 
 
 # Install dredd to run integration tests
-WORKDIR /
-RUN apk add --no-cache --update nodejs gcc g++ python && \
+RUN cd / && \
+    apk add --no-cache --update nodejs gcc g++ python && \
     npm config set loglevel error && \
     npm install npm@latest -g && \
     npm install dredd && \
