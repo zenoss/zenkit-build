@@ -35,12 +35,17 @@ RUN go get github.com/wadey/gocovmerge && \
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr && \
-	cd /go/src/github.com/tmrts/boilr && \
-	git remote add iancmcc http://github.com/iancmcc/boilr && \
-	git fetch iancmcc master:iancmcc-master && \
-	git checkout iancmcc-master && \
-	go install
+RUN go get github.com/tmrts/boilr 
+
+# Install dredd to run integration tests
+RUN cd / && \
+    apk add --no-cache --update nodejs gcc g++ python && \
+    npm config set loglevel error && \
+    npm install npm@latest -g && \
+    npm install dredd && \
+    apk del gcc g++ python && \
+    go get github.com/snikch/goodman/cmd/goodman
+ENV PATH ${PATH}:/node_modules/.bin
 
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
