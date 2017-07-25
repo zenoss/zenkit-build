@@ -20,7 +20,6 @@ RUN go install -v std
 
 # Install Glide to manage dependencies
 RUN go get github.com/Masterminds/glide
-ENV GLIDE_HOME /home/user/.glide
 
 # Install Ginkgo and Gomega to run tests
 RUN go get github.com/onsi/ginkgo/ginkgo && \
@@ -49,6 +48,10 @@ ENV PATH ${PATH}:/node_modules/.bin
 
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
+
+# Disable ssh host key checking
+RUN echo 'Host *' >> /etc/ssh/ssh_config
+RUN echo '    StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 COPY create-zenkit.sh /usr/local/bin/create-zenkit.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
