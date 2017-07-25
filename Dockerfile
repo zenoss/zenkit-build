@@ -19,7 +19,8 @@ ENV CGO_ENABLED=0
 RUN go install -v std
 
 # Install Glide to manage dependencies
-RUN go get github.com/Masterminds/glide
+RUN go get github.com/Masterminds/glide && \
+	rm -rf github.com/Masterminds
 
 # Install Ginkgo and Gomega to run tests
 RUN go get github.com/onsi/ginkgo/ginkgo && \
@@ -27,24 +28,23 @@ RUN go get github.com/onsi/ginkgo/ginkgo && \
 
 # Install coverage tools to produce coverage reports
 RUN go get github.com/wadey/gocovmerge && \
+	rm -rf github.com/wadey && \
 	go get github.com/axw/gocov/gocov && \
-	go get github.com/AlekSi/gocov-xml
+	rm -rf github.com/axw && \
+	go get github.com/AlekSi/gocov-xml && \
+	rm -rf github.com/AlekSi
 
 # Install gobindata to bake in swagger
-RUN go get github.com/jteeuwen/go-bindata/go-bindata
+RUN go get github.com/jteeuwen/go-bindata/go-bindata && \
+	rm -rf github.com/jteeuwen
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr 
+RUN go get github.com/tmrts/boilr && \
+	rm -rf github.com/tmrts/boilr
 
-# Install dredd to run integration tests
-RUN cd / && \
-    apk add --no-cache --update nodejs gcc g++ python && \
-    npm config set loglevel error && \
-    npm install npm@latest -g && \
-    npm install dredd && \
-    apk del gcc g++ python && \
+RUN apk add --update --no-cache nodejs && \
+	npm install -g --unsafe-perm --no-progress --no-optional --only=prod dredd@4.1.2 && \
     go get github.com/snikch/goodman/cmd/goodman
-ENV PATH ${PATH}:/node_modules/.bin
 
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
