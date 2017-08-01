@@ -34,7 +34,7 @@ RUN go get github.com/wadey/gocovmerge && \
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr 
+RUN go get github.com/tmrts/boilr
 
 # Install dredd to run integration tests
 RUN cd / && \
