@@ -1,9 +1,9 @@
-FROM golang:1.8.3-alpine
+FROM golang:1.9rc1-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 
 # Install tools of general use
-RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect
+RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
 
 # Install glibc from sgerrand/alpine-pkg-glibc
 RUN curl -sSL https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub > /etc/apk/keys/sgerrand.rsa.pub && \
@@ -34,11 +34,11 @@ RUN go get github.com/wadey/gocovmerge && \
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr 
+RUN go get github.com/tmrts/boilr
 
 # Install dredd to run integration tests
 RUN cd / && \
-    apk add --no-cache --update nodejs gcc g++ python && \
+    apk add --no-cache --update nodejs nodejs-npm gcc g++ python && \
     npm config set loglevel error && \
     npm install npm@latest -g && \
     npm install dredd && \
