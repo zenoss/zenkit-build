@@ -54,5 +54,6 @@ RUN echo 'Host *' >> /etc/ssh/ssh_config
 RUN echo '    StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 
 COPY create-zenkit.sh /usr/local/bin/create-zenkit.sh
+COPY create-zenkit-local.sh /usr/local/bin/create-zenkit-local.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
