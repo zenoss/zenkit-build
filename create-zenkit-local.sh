@@ -12,7 +12,8 @@ send "\n"
 expect -re ".*Please choose a value for \"Description\".*"
 send "\n"
 
-interact
+expect eof
+wait
 exit
 EOF
 )
