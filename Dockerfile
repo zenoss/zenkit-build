@@ -1,4 +1,4 @@
-FROM golang:1.9rc1-alpine
+FROM golang:1.9-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 
@@ -34,7 +34,12 @@ RUN go get github.com/wadey/gocovmerge && \
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr
+RUN go get github.com/tmrts/boilr && \
+    cd $GOPATH/src/github.com/tmrts/boilr && \
+    git remote add fork https://github.com/smousa/boilr.git && \
+    git fetch fork format-camel && \
+    git checkout format-camel && \
+    go install
 
 # Install dredd to run integration tests
 RUN cd / && \
