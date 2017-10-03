@@ -11,6 +11,8 @@ expect -re ".*Please choose a value for \"Title\".*"
 send "\n"
 expect -re ".*Please choose a value for \"Description\".*"
 send "\n"
+expect -re ".*Please choose a value for \"AdminPort\".*"
+send "\n"
 
 expect eof
 wait
