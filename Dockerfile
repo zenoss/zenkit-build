@@ -1,6 +1,7 @@
 FROM golang:1.9-alpine
 
 ARG GLIBC_VERSION=2.25-r0
+ARG PROTOC_VERSION=3.4.0
 
 # Install tools of general use
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
@@ -50,6 +51,14 @@ RUN cd / && \
     apk del gcc g++ python && \
     go get github.com/snikch/goodman/cmd/goodman
 ENV PATH ${PATH}:/node_modules/.bin
+
+# Install protoc and go plug-in
+RUN mkdir /tmp/protoc && \
+    curl -sSL https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
+    unzip -qo /tmp/protoc/protoc.zip bin/protoc && \
+    cp bin/protoc /usr/bin && \
+    rm -rf /tmp/protoc && \
+    go get -u github.com/golang/protobuf/protoc-gen-go
 
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
