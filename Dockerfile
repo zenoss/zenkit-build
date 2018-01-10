@@ -1,7 +1,7 @@
 FROM golang:1.9-alpine
 
 ARG GLIBC_VERSION=2.25-r0
-ARG PROTOC_VERSION=3.4.0
+ARG PROTOC_VERSION=3.5.1
 
 # Install tools of general use
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
@@ -55,8 +55,12 @@ ENV PATH ${PATH}:/node_modules/.bin
 # Install protoc and go plug-in
 RUN mkdir /tmp/protoc && \
     curl -sSL https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
-    unzip -qo /tmp/protoc/protoc.zip bin/protoc && \
-    cp bin/protoc /usr/bin && \
+    unzip -qo /tmp/protoc/protoc.zip -d /tmp/protoc && \
+    cp /tmp/protoc/bin/protoc /usr/bin && \
+    mkdir -p /usr/include && \
+    cp -R /tmp/protoc/include/google /usr/include/. && \
+    chmod a+x /usr/bin/protoc && \
+    chmod -R 777 /usr/include/google && \
     rm -rf /tmp/protoc && \
     go get -u github.com/golang/protobuf/protoc-gen-go
 
