@@ -1,4 +1,4 @@
-FROM golang:1.9-alpine
+FROM golang:1.10-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
@@ -19,9 +19,6 @@ ENV CGO_ENABLED=0
 # library from being marked stale, causing full rebuilds every time.
 RUN go install -v std
 
-# Install Glide to manage dependencies
-RUN go get github.com/Masterminds/glide
-
 # Install Ginkgo and Gomega to run tests
 RUN go get github.com/onsi/ginkgo/ginkgo && \
 	go get github.com/onsi/gomega
@@ -30,6 +27,10 @@ RUN go get github.com/onsi/ginkgo/ginkgo && \
 RUN go get github.com/wadey/gocovmerge && \
 	go get github.com/axw/gocov/gocov && \
 	go get github.com/AlekSi/gocov-xml
+
+# Install fmt and lint
+RUN go get github.com/golang/lint/golint && \
+	go get github.com/golang/dep/cmd/dep
 
 # Install gobindata to bake in swagger
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
@@ -41,16 +42,6 @@ RUN go get github.com/tmrts/boilr && \
     git fetch fork format-camel && \
     git checkout format-camel && \
     go install
-
-# Install dredd to run integration tests
-RUN cd / && \
-    apk add --no-cache --update nodejs nodejs-npm gcc g++ python && \
-    npm config set loglevel error && \
-    npm install npm@latest -g && \
-    npm install dredd && \
-    apk del gcc g++ python && \
-    go get github.com/snikch/goodman/cmd/goodman
-ENV PATH ${PATH}:/node_modules/.bin
 
 # Install protoc and go plug-in
 RUN mkdir /tmp/protoc && \
