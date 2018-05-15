@@ -55,6 +55,9 @@ RUN mkdir /tmp/protoc && \
     rm -rf /tmp/protoc && \
     go get -u github.com/golang/protobuf/protoc-gen-go
 
+# Include Node.js and yarn
+RUN apk add --no-cache nodejs nodejs-npm && npm install -g yarn
+
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
 
