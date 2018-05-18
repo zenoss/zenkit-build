@@ -2,6 +2,7 @@ FROM golang:1.10-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
+ARG GIT_CREDS
 
 # Install tools of general use
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
@@ -68,4 +69,12 @@ RUN echo '    StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 COPY create-zenkit.sh /usr/local/bin/create-zenkit.sh
 COPY create-zenkit-local.sh /usr/local/bin/create-zenkit-local.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+ONBUILD ARG GIT_CREDS
+ONBUILD RUN if [ -n "${GIT_CREDS}" ]; then \
+	echo "${GIT_CREDS}" > /etc/.git_creds; \
+	git config --global credential.helper 'store --file /etc/.git_creds'; \
+	git config --global url.'https://github.com'.insteadOf 'ssh://git@github.com'; \
+	fi
+
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
