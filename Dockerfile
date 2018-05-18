@@ -69,9 +69,10 @@ COPY create-zenkit.sh /usr/local/bin/create-zenkit.sh
 COPY create-zenkit-local.sh /usr/local/bin/create-zenkit-local.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-ONBUILD ARG GIT_CREDS
-ONBUILD RUN if [ -n "${GIT_CREDS}" ]; then \
-	echo "${GIT_CREDS}" > /etc/.git_creds; \
+ONBUILD ARG GITHUB_USERNAME
+ONBUILD ARG GITHUB_PASSWORD
+ONBUILD RUN if [ -n "${GITHUB_USERNAME}" ]; then \
+	printf 'https://%s:%s@github.com' "${GITHUB_USERNAME}" "${GITHUB_PASSWORD}" > /etc/.git_creds; \
 	git config --global credential.helper 'store --file /etc/.git_creds'; \
 	git config --global url.'https://github.com'.insteadOf 'ssh://git@github.com'; \
 	fi
