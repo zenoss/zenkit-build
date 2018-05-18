@@ -2,7 +2,6 @@ FROM golang:1.10-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
-ARG GIT_CREDS
 
 # Install tools of general use
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
