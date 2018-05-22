@@ -58,6 +58,9 @@ RUN mkdir /tmp/protoc && \
 # Include Node.js and yarn
 RUN apk add --no-cache nodejs nodejs-npm && npm install -g yarn
 
+# Install mockery
+RUN go get github.com/vektra/mockery/.../
+
 # Ensure that everything under the GOPATH is writable by everyone
 RUN chmod -R 777 $GOPATH
 
