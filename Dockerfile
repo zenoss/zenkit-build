@@ -7,7 +7,7 @@ ARG PROTOC_VERSION=3.5.1
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
 
 # Install glibc from sgerrand/alpine-pkg-glibc
-RUN curl -sSL https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub > /etc/apk/keys/sgerrand.rsa.pub && \
+RUN curl -sSL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub > /etc/apk/keys/sgerrand.rsa.pub && \
     curl -sSL https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk > glibc-${GLIBC_VERSION}.apk && \
 	apk add --no-cache glibc-${GLIBC_VERSION}.apk && \
 	rm -f glibc-${GLIBC_VERSION}.apk
@@ -29,7 +29,7 @@ RUN go get github.com/wadey/gocovmerge && \
 	go get github.com/AlekSi/gocov-xml
 
 # Install fmt and lint
-RUN go get github.com/golang/lint/golint && \
+RUN go get golang.org/x/lint/golint && \
 	go get github.com/golang/dep/cmd/dep
 
 # Install gobindata to bake in swagger
@@ -54,6 +54,9 @@ RUN mkdir /tmp/protoc && \
     chmod -R 777 /usr/include/google && \
     rm -rf /tmp/protoc && \
     go get -u github.com/golang/protobuf/protoc-gen-go
+
+# Install grpc-java plugin
+RUN apk add grpc-java --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
 
 # Include Node.js and yarn
 RUN apk add --no-cache nodejs nodejs-npm && npm install -g yarn
