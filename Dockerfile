@@ -56,7 +56,17 @@ RUN mkdir /tmp/protoc && \
     go get -u github.com/golang/protobuf/protoc-gen-go
 
 # Install grpc-java plugin
-RUN apk add grpc-java --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
+# When we have a version of org.apache.beam that is compatible with the latest io.grpc, we can use the line below to install
+#  the grpc-java plugin.  In the meantime, we'll use the manually build plug-in for alpine
+
+# Uncomment this line when when beam works with the latest io.grpc
+# RUN apk add grpc-java --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
+
+# Remove these 3 lines when beam works with the latest io.grpc
+RUN mkdir /tmp/packages
+COPY grpc-java-1.13.1-r0.apk /tmp/packages/grpc-java-1.13.1-r0.apk
+RUN apk add /tmp/packages/grpc-java-1.13.1-r0.apk --allow-untrusted && \
+    rm -rf /tmp/packages
 
 # Include Node.js and yarn
 RUN apk add --no-cache nodejs nodejs-npm && npm install -g yarn
