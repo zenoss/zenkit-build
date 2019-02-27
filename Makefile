@@ -1,4 +1,4 @@
-VERSION := 1.7.5
+VERSION := py-proto
 
 default: zenoss/zenkit-build
 
