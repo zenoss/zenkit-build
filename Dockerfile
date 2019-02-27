@@ -1,7 +1,14 @@
-FROM golang:1.10-alpine
+FROM golang:1.11-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
+
+## Used for building python protos and grpc
+RUN apk add py-pip musl libc6-compat linux-headers build-base python-dev
+RUN python -m pip install grpcio-tools
+## delete it after building because it conflicts with glibc pacage below
+RUN apk del libc6-compat
+
 
 # Install tools of general use
 RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certificates expect docker
