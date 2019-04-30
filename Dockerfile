@@ -61,8 +61,7 @@ RUN mkdir /tmp/protoc && \
     chmod -R 777 /usr/include/google && \
     rm -rf /tmp/protoc && \
     go get -u github.com/golang/protobuf/protoc-gen-go && \
-    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && \
-    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+    git clone https://github.com/googleapis/googleapis
 
 # Install grpc-java plugin
 RUN apk add grpc-java --no-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/
