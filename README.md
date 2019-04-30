@@ -18,7 +18,7 @@ git checkout master
 git pull
 
 export TAG=<yourVersionNumberHere>
-git tag -a${TAG} -m "release ${TAG}"
+git tag -a ${TAG} -m "release ${TAG}"
 git push origin ${TAG}
 ```
 
