@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine
+FROM golang:1.12-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
