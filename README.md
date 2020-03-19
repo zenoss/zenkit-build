@@ -3,6 +3,39 @@
 A build image for zenkit microservices. Also contains glide for dependency
 management, and ginkgo, gocovmerge and dredd, for running tests.
 
+## A note on zenkit-build:1.8.0:
+zenkit-build 1.8.0 uses go1.14, which uses go modules by default.  Here are the steps for migrating a microservice to go1.14:
+1. Switch your local environment to go1.14 (steps below are for gvm)
+```
+OLDGOPATH=$GOPATH
+gvm install go1.14 --default
+gvm use go1.14
+GOPATH=$OLDGOPATH
+```
+2. Set the GOPRIVATE environment variable to treat everything from github as a private repo.  This prevents errors like "fatal: could not read Username for 'https://github.com': terminal prompts disabled":
+```
+go env -w GOPRIVATE=github.com
+```
+3. If the repo has already been converted to go modules, follow these steps.  Otherwise, skip to 4.
+```
+# Remove old go mod and vendor stuff
+rm -rf vendor go.mod go.sum
+```
+4. (Re)-initialize go mod
+```
+go mod init <module name> # i.e. go mod init github.com/zenoss/yamr
+go mod vendor
+```
+5. Check the Makefile and Dockerfile and add `-mod=vendor` to all `go` and `ginkgo` commands.  This tells these commands to use the vendored dependencies rather than attempting to pull them from github (which will fail if inside a container).
+    1. Example1: 
+    `RUN go build -o /bin/yamr` 
+    should be 
+    `RUN go build -mod=vendor -o /bin/yamr`
+    2. Example2: 
+    `$(GINKGO) -r -cover -covermode=count --skipPackage vendor --tags integration` 
+    should be:
+    `$(GINKGO) -mod vendor -r -cover -covermode=count --skipPackage vendor --tags integration`
+
 ## Building zenkit-build
 This image is built automatically on [dockerhub](https://cloud.docker.com/u/zenoss/repository/docker/zenoss/zenkit-build/)
 any time changes are released to master.
