@@ -4,8 +4,8 @@ ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
 
 ## Used for building python protos and grpc
-RUN apk add py-pip musl libc6-compat linux-headers build-base python-dev
-RUN python -m pip install grpcio-tools
+RUN apk add py-pip musl libc6-compat linux-headers build-base python3-dev
+RUN python3 -m pip install grpcio-tools
 ## delete it after building because it conflicts with glibc pacage below
 RUN apk del libc6-compat
 
@@ -16,8 +16,8 @@ RUN apk add --no-cache su-exec curl bash git openssh mercurial make ca-certifica
 # Install glibc from sgerrand/alpine-pkg-glibc
 RUN curl -sSL https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub > /etc/apk/keys/sgerrand.rsa.pub && \
     curl -sSL https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk > glibc-${GLIBC_VERSION}.apk && \
-	apk add --no-cache glibc-${GLIBC_VERSION}.apk && \
-	rm -f glibc-${GLIBC_VERSION}.apk
+    apk add --no-cache glibc-${GLIBC_VERSION}.apk && \
+    rm -f glibc-${GLIBC_VERSION}.apk
 
 # Disable cgo so we get fully static binaries.
 ENV CGO_ENABLED=0
@@ -28,16 +28,16 @@ RUN go install -v std
 
 # Install Ginkgo and Gomega to run tests
 RUN go get github.com/onsi/ginkgo/ginkgo && \
-	go get github.com/onsi/gomega
+    go get github.com/onsi/gomega
 
 # Install coverage tools to produce coverage reports
 RUN go get github.com/wadey/gocovmerge && \
-	go get github.com/axw/gocov/gocov && \
-	go get github.com/AlekSi/gocov-xml
+    go get github.com/axw/gocov/gocov && \
+    go get github.com/AlekSi/gocov-xml
 
 # Install fmt and lint
 RUN go get golang.org/x/lint/golint && \
-	go get github.com/golang/dep/cmd/dep
+    go get github.com/golang/dep/cmd/dep
 
 # Install gobindata to bake in swagger
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
@@ -69,6 +69,9 @@ RUN apk add grpc-java --no-cache --repository http://dl-3.alpinelinux.org/alpine
 
 # Include Node.js and yarn
 RUN apk add --no-cache nodejs nodejs-npm && npm install -g yarn
+
+# Support pcre lib
+RUN apk add --update --no-cache build-base gcc g++ pcre pcre-dev
 
 # Install mockery
 RUN go get github.com/vektra/mockery/.../
