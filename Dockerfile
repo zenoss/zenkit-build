@@ -1,4 +1,4 @@
-FROM golang:1.14-alpine
+FROM golang:1.16-alpine
 
 ARG GLIBC_VERSION=2.25-r0
 ARG PROTOC_VERSION=3.5.1
@@ -36,19 +36,21 @@ RUN go get github.com/wadey/gocovmerge && \
     go get github.com/AlekSi/gocov-xml
 
 # Install fmt and lint
-RUN go get golang.org/x/lint/golint && \
-    go get github.com/golang/dep/cmd/dep
+RUN go install golang.org/x/lint/golint@latest
+
+# re-adding godep install just in case a project needs it
+RUN GO111MODULE=off go get github.com/golang/dep/cmd/dep
 
 # Install gobindata to bake in swagger
 RUN go get github.com/jteeuwen/go-bindata/go-bindata
 
 # Install boilr to generate services
-RUN go get github.com/tmrts/boilr && \
+RUN GO111MODULE=off go get github.com/tmrts/boilr && \
     cd $GOPATH/src/github.com/tmrts/boilr && \
     git remote add fork https://github.com/smousa/boilr.git && \
     git fetch fork format-camel && \
     git checkout format-camel && \
-    go install
+    GO111MODULE=off go install
 
 # Install protoc and go plug-in
 RUN mkdir /tmp/protoc && \
@@ -86,6 +88,11 @@ RUN echo '    StrictHostKeyChecking no' >> /etc/ssh/ssh_config
 COPY create-zenkit.sh /usr/local/bin/create-zenkit.sh
 COPY create-zenkit-local.sh /usr/local/bin/create-zenkit-local.sh
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+# create symbolic link to python interpreter if it does not exists
+RUN if [ -z $(which python) ]; then \
+        ln -s $(which python3) /usr/bin/python; \
+    fi
 
 ONBUILD ARG GITHUB_USERNAME
 ONBUILD ARG GITHUB_PASSWORD
